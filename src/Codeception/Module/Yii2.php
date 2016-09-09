@@ -11,6 +11,7 @@ use Codeception\Lib\Interfaces\PartedModule;
 use Codeception\Lib\Notification;
 use Codeception\TestInterface;
 use Yii;
+use yii\base\Application;
 use yii\db\ActiveRecordInterface;
 
 /**
@@ -194,7 +195,7 @@ class Yii2 extends Framework implements ActiveRecord, PartedModule
 
         $this->client->resetPersistentVars();
 
-        if (\Yii::$app->has('session', true)) {
+        if (\Yii::$app instanceof Application && \Yii::$app->has('session', true)) {
             \Yii::$app->session->close();
         }
         parent::_after($test);
@@ -225,7 +226,7 @@ class Yii2 extends Framework implements ActiveRecord, PartedModule
      */
     public function amLoggedInAs($user)
     {
-        if (!Yii::$app->has('user')) {
+        if (\Yii::$app instanceof Application && !Yii::$app->has('user')) {
             throw new ModuleException($this, 'User component is not loaded');
         }
         if ($user instanceof \yii\web\IdentityInterface) {
